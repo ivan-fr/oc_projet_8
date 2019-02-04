@@ -19,7 +19,6 @@ from django.urls import path, include
 from purbeurre.views import index
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', index),
     path('purbeurre/', include('purbeurre.urls', namespace='purbeurre')),
 ]
