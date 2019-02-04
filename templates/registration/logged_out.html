@@ -1,0 +1,31 @@
+{% extends 'purbeurre/base.html' %}
+
+{% block nav_right %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="#loggout">Deconnecté</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <header class="smallheader text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <h1 class="background_color_moules text-uppercase">
+                        Deconnecté
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="loggout">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    {{ title }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

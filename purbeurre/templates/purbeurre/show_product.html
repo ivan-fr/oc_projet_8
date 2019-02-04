@@ -1,0 +1,82 @@
+{% extends 'purbeurre/base.html' %}
+{% load static %}
+
+{% block nav_right %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="#product">Produit</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <header class="smallheader text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="item">
+                        {% if product.nutrition_grades %}
+                            <span class="notify-badge">{{ product.nutrition_grades|upper }}</span>
+                        {% endif %}
+                        <img src="{{ product.image_url }}"
+                             alt="aliment" height="300px" width="300px">
+                        <div class="carousel-caption d-none d-md-block">
+                            <p>{{ product.product_name_fr }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="product">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-auto mx-auto">
+                    <h3>Voici la fiche du produit :</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="media">
+                        <div class="item mr-5">
+                            {% if product.nutrition_grades %}
+                                <span class="notify-badge">{{ product.nutrition_grades|upper }}</span>
+                            {% endif %}
+                            {% if product.image_url %}
+                                <img src="{{ product.image_url }}"
+                                     alt="aliment" height="150px"
+                                     width="150px">
+                            {% else %}
+                                <img src="{% static 'purbeurre/img/unknow.png' %}"
+                                     alt="aliment" height="150px"
+                                     width="150px">
+                            {% endif %}
+                        </div>
+                        <div class="media-body">
+                            <h5><strong>{{ product.name }}</strong></h5>
+                            <p>marques
+                                : {{ product.brands.all|join:", " }}</p>
+                            <p>categories
+                                : {{ product.categories.all|join:", " }}</p>
+                            <p>magasins
+                                : {{ product.stores.all|join:", " }}</p>
+                            <p>ingredients
+                                : {{ product.ingredients.all|join:", " }}</p>
+                            <hr>
+                            <h5><strong>Repères nutritionnels pour 100 g
+                                :</strong></h5>
+                            <p>{{ product.fat }} g Matières grasses /
+                                Lipides</p>
+                            <p>{{ product.saturated_fat }} g Acides gras
+                                saturés</p>
+                            <p>{{ product.sugars }} g Sucres</p>
+                            <p>{{ product.salt }} g Sel</p>
+                            <hr>
+                            <a href="{{ product.get_openfoodfacts_url }}">Lien
+                                du produit sur openfoodfacts.</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'purbeurre/base.html' %}
+{% load static %}
+
+{% block nav_right %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="#products">Produits</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <header class="smallheader text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <h1 class="background_color_moules text-uppercase">
+                        Résultats de recherche pour "{{ search }}"
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="products">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-auto mx-auto">
+                    {% if products %}
+                        <h3>Choisissez le produit pour lequel vous voulez un
+                            substituant :</h3>
+                    {% else %}
+                        <h3>Il n'y a pas de résultat pour la recherche.</h3>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-md-4 col-sm-6 col-12 text-center">
+                        <a href="{% url 'purbeurre:substitutes' product.code %}">
+                            <div class="item">
+                                {% if product.nutrition_grades %}
+                                    <span class="notify-badge">{{ product.nutrition_grades|upper }}</span>
+                                {% endif %}
+                                {% if product.image_url %}
+                                    <img src="{{ product.image_url }}"
+                                         alt="aliment" height="200px"
+                                         width="200px">
+                                {% else %}
+                                    <img src="{% static 'purbeurre/img/unknow.png' %}"
+                                         alt="aliment" height="200px"
+                                         width="200px">
+                                {% endif %}
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>
+                                        {% if product.product_name_fr %}
+                                            {{ product.product_name_fr }}
+                                        {% else %}
+                                            {{ product.product_name }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

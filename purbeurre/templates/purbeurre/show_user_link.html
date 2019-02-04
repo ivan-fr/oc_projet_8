@@ -1,0 +1,124 @@
+{% extends 'purbeurre/base.html' %}
+{% load static %}
+
+{% block nav_right %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="#substituts">Substituts</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <header class="smallheader text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <h1 class="background_color_moules text-uppercase">
+                        Aliments sauvergardés
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="substituts">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-auto mx-auto">
+                    {% if liste %}
+                        <h3>Voici votre liste :</h3>
+                    {% else %}
+                        <h3>Votre liste est vide.</h3>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12" id="saved">
+                    {% for product in liste %}
+                        <div class="media">
+                            <div class="item mr-5">
+                                {% if product.nutrition_grades %}
+                                    <span class="notify-badge">{{ product.nutrition_grades|upper }}</span>
+                                {% endif %}
+                                {% if product.image_url %}
+                                    <img src="{{ product.image_url }}"
+                                         alt="aliment" height="150px"
+                                         width="150px">
+                                {% else %}
+                                    <img src="{% static 'purbeurre/img/unknow.png' %}"
+                                         alt="aliment" height="150px"
+                                         width="150px">
+                                {% endif %}
+                            </div>
+                            <div class="media-body">
+                                <h5 class="mt-0">
+                                    <a href="{% url 'purbeurre:show_product' product.id %}">{{ product.name }}</a>
+                                </h5>
+                                <p>marques
+                                    : {{ product.brands.all|join:", " }}</p>
+                                <p>categories
+                                    : {{ product.categories.all|join:", " }}</p>
+                                <p>magasins
+                                    : {{ product.stores.all|join:", " }}</p>
+                                <p>ingredients
+                                    : {{ product.ingredients.all|join:", " }}</p>
+                                {% for substitute in product.substitutes.all %}
+                                    <div class="media mt-3">
+                                        <div class="item mr-5">
+                                            {% if substitute.nutrition_grades %}
+                                                <span class="notify-badge">{{ substitute.nutrition_grades|upper }}</span>
+                                            {% endif %}
+                                            {% if substitute.image_url %}
+                                                <img src="{{ substitute.image_url }}"
+                                                     alt="aliment"
+                                                     height="150px"
+                                                     width="150px">
+                                            {% else %}
+                                                <img src="{% static 'purbeurre/img/unknow.png' %}"
+                                                     alt="aliment"
+                                                     height="150px"
+                                                     width="150px">
+                                            {% endif %}
+                                        </div>
+                                        <div class="media-body">
+                                            <h5 class="mt-0">
+                                                <a href="{% url 'purbeurre:show_product' substitute.id %}">{{ substitute.name }}</a>
+                                            </h5>
+                                            <p>marques
+                                                : {{ substitute.brands.all|join:", " }}</p>
+                                            <p>categories
+                                                : {{ substitute.categories.all|join:", " }}</p>
+                                            <p>magasins
+                                                : {{ substitute.stores.all|join:", " }}</p>
+                                            <p>ingredients
+                                                : {{ substitute.ingredients.all|join:", " }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12" id="saved">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination mt-3">
+                            {% if liste.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page={{ liste.previous_page_number }}">Précédent</a>
+                                </li>
+                            {% endif %}
+                            {% if liste.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page={{ liste.next_page_number }}">Suivant</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

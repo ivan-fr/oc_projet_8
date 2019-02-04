@@ -1,0 +1,8 @@
+venv/*
+.idea/*
+.DS_Store
+.vscode/*
+__pycache__/*
+oc_projet_8/__pycache__
+purbeurre/__pycache__/
+purbeurre/migrations/__pycache__/

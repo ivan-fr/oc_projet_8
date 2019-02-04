@@ -1,0 +1,86 @@
+{% extends 'purbeurre/base.html' %}
+{% load static %}
+
+{% block nav_right %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="#substituts">Substituts</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <header class="smallheader text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <h1 class="background_color_moules text-uppercase">
+                        Création du lien entre le produit et l'un de ses
+                        substituts.
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="substituts">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-12 text-center">
+                    <h4>Votre produit selectionné</h4>
+                    <hr>
+                    <div class="item">
+                        {% if product.nutrition_grades %}
+                            <span class="notify-badge">{{ product.nutrition_grades|upper }}</span>
+                        {% endif %}
+                        {% if product.image_url %}
+                            <img src="{{ product.image_url }}"
+                                 alt="aliment" height="300px"
+                                 width="300px">
+                        {% else %}
+                            <img src="{% static 'purbeurre/img/unknow.png' %}"
+                                 alt="aliment" height="300px"
+                                 width="300px">
+                        {% endif %}
+                        <div class="carousel-caption d-none d-md-block">
+                            <p>
+                                {% if product.product_name_fr %}
+                                    {{ product.product_name_fr }}
+                                {% else %}
+                                    {{ product.name }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12 text-center">
+                    <h4>Votre produit substituant</h4>
+                    <hr>
+                    <div class="item">
+                        {% if substitute.nutrition_grades %}
+                            <span class="notify-badge">{{ substitute.nutrition_grades|upper }}</span>
+                        {% endif %}
+                        {% if substitute.image_url %}
+                            <img src="{{ substitute.image_url }}"
+                                 alt="aliment" height="300px"
+                                 width="300px">
+                        {% else %}
+                            <img src="{% static 'purbeurre/img/unknow.png' %}"
+                                 alt="aliment" height="300px"
+                                 width="300px">
+                        {% endif %}
+                        <div class="carousel-caption d-none d-md-block">
+                            <p>
+                                {% if substitute.product_name_fr %}
+                                    {{ substitute.product_name_fr }}
+                                {% elif substitute.product_name %}
+                                    {{ substitute.product_name }}
+                                {% else %}
+                                    {{ substitute.name }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

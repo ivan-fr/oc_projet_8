@@ -1,0 +1,73 @@
+{% extends 'purbeurre/base.html' %}
+
+{% block nav_right %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="#login">Se connecter</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <header class="smallheader text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <h1 class="background_color_moules text-uppercase">
+                        Se connecter
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="login">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    {% load widget_tweaks %}
+
+                    {% if form.errors %}
+                        <p>Votre nom d'utilisateur et votre mot de passe ne
+                            correspondent pas. Veuillez réessayer.</p>
+                    {% endif %}
+
+                    {% if next %}
+                        {% if user.is_authenticated %}
+                            <p>Votre compte n'a pas accès à cette page. Pour
+                                continuer, connectez-vous avec un compte ayant
+                                accès.</p>
+                        {% else %}
+                            <p>Veuillez vous connecter pour voir cette page.</p>
+                        {% endif %}
+                    {% endif %}
+
+                    <form method="post" action="{% url 'purbeurre:login' %}">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            {{ form.username|add_label_class:"col-sm-3 col-form-label" }}
+                            <div class="col-sm-9">
+                                {{ form.username|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            {{ form.password|add_label_class:"col-sm-3 col-form-label" }}
+                            <div class="col-sm-9">
+                                {{ form.password|add_class:"form-control" }}
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Se
+                                    connecter
+                                </button>
+                                <input type="hidden" name="next"
+                                       value="{{ next }}">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

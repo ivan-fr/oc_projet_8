@@ -1,0 +1,75 @@
+{% extends 'purbeurre/base.html' %}
+{% load static %}
+
+{% block nav_right %}
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="#substituts">Substituts</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <header class="smallheader text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="item">
+                        {% if product.nutrition_grades %}
+                            <span class="notify-badge">{{ product.nutrition_grades|upper }}</span>
+                        {% endif %}
+                        <img src="{{ product.image_url }}"
+                             alt="aliment" height="300px" width="300px">
+                        <div class="carousel-caption d-none d-md-block">
+                            <p>{{ product.product_name_fr }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="substituts">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-auto mx-auto">
+                    {% if substitutes %}
+                        <h3>Vous pouvez remplacer ce produit par :</h3>
+                    {% else %}
+                        <h3>Il n'y a pas de substituts de meilleure qualité pour
+                            ce produit.</h3>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                {% for product in substitutes %}
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <div class="card mx-auto text-center mt-4" style="width: 200px">
+                            <div class="item item-in-card">
+                                {% if product.nutrition_grades %}
+                                    <span class="notify-badge">{{ product.nutrition_grades|upper }}</span>
+                                {% endif %}
+                                {% if product.image_url %}
+                                    <img class="card-img-top"
+                                         src="{{ product.image_url }}"
+                                         alt="aliment" height="200px"
+                                         width="200px">
+                                {% else %}
+                                    <img class="card-img-top"
+                                         src="{% static 'purbeurre/img/unknow.png' %}"
+                                         alt="aliment" height="200px"
+                                         width="200px">
+                                {% endif %}
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>{{ product.product_name_fr }}</p>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text"><a
+                                        href="{% url 'purbeurre:create_link' sign product.code %}">Sauvergader</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+    </section>
+{% endblock %}

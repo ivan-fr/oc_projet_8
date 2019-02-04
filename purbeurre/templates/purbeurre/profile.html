@@ -1,0 +1,18 @@
+{% extends 'purbeurre/base.html' %}
+
+{% block content %}
+    <header class="masthead text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-8 mx-auto background_color_moules p-3">
+                    <h5 class="text-uppercase">Bonjour ! </h5>
+                    <hr>
+                    <h4>Votre nom d'utilisateur :
+                        <strong>{{ user.username }}</strong></h4>
+                    <hr>
+                    <h4> Votre mail : <strong>{{ user.email }}</strong></h4>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock %}
