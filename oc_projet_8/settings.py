@@ -25,10 +25,9 @@ SECRET_KEY = 'qn0mzmqfgp4md#0s)-l3#12xcxo*oli3kqps&jvg$@nd*3n)gx'
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get('ENV') == 'PRODUCTION':
     DEBUG = False
+    ALLOWED_HOSTS = ['django-purbeurre.herokuapp.com']
 else:
     DEBUG = True
-
-ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -127,7 +126,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Django debug toolbar
-INTERNAL_IPS = ['django-purbeurre.herokuapp.com']
+INTERNAL_IPS = ['127.0.0.1']
 
 LOGIN_REDIRECT_URL = '/purbeurre/my_account/'
 LOGIN_URL = '/purbeurre/login/'
