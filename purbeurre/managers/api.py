@@ -114,6 +114,8 @@ class ApiManager:
 
     @classmethod
     def get_product(cls, bar_code: str, with_clean=False):
+        """Get products from the openfoodfacts API by bar code"""
+
         with urllib.request.urlopen(
                 cls.product_url.format(bar_code)) as response:
             logger.error(response.geturl())

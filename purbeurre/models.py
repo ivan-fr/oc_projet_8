@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 
 class Category(models.Model):
+    """add category model"""
+
     name = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
@@ -10,6 +12,8 @@ class Category(models.Model):
 
 
 class Store(models.Model):
+    """add Store model"""
+
     name = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
@@ -17,6 +21,8 @@ class Store(models.Model):
 
 
 class Ingredient(models.Model):
+    """add Ingredient model"""
+
     name = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
@@ -24,6 +30,8 @@ class Ingredient(models.Model):
 
 
 class Brand(models.Model):
+    """add Brand model"""
+
     name = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
@@ -31,6 +39,8 @@ class Brand(models.Model):
 
 
 class Product(models.Model):
+    """add Product model"""
+
     product_url = "https://fr.openfoodfacts.org/product/{}"
 
     name = models.CharField(max_length=255)
@@ -64,6 +74,8 @@ class Product(models.Model):
 
 
 class ProductSubstituteProduct(models.Model):
+    """add ProductSubstituteProduct model"""
+
     from_product = models.ForeignKey(Product, on_delete=models.CASCADE,
                                      related_name='from_product')
     to_product = models.ForeignKey(Product, on_delete=models.CASCADE,

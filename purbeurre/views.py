@@ -15,6 +15,8 @@ from .models import ProductSubstituteProduct, Product
 
 
 def index(request):
+    """render index page"""
+
     if request.method == "POST":
         navbar_search_form = SearchForm(request.POST, prefix="navbar")
         head_search_form = SearchForm(request.POST, prefix="head")
@@ -48,10 +50,14 @@ def index(request):
 
 
 def show_credits(request):
+    """render credits page"""
+
     return render(request, 'purbeurre/mentions_legales.html')
 
 
 def get_substitutes(request, bar_code):
+    """ render substitutes page """
+
     product = ApiManager.get_product(bar_code)
     substitutes = ApiManager.get_substitutes(product)
     navbar_search_form = SearchForm(prefix="navbar")
@@ -69,6 +75,8 @@ def get_substitutes(request, bar_code):
 
 
 def show_product(request, _id):
+    """ render show product """
+
     product = get_object_or_404(Product.objects.prefetch_related('brands',
                                                                  'ingredients',
                                                                  'stores',
@@ -84,6 +92,8 @@ def show_product(request, _id):
 
 @login_required
 def create_substitute_link(request, sign, substitute_bar_code):
+    """ render the creating link beetween product """
+
     try:
         _dict = signing.loads(sign)
     except signing.BadSignature:
@@ -167,6 +177,8 @@ def create_substitute_link(request, sign, substitute_bar_code):
 
 @login_required
 def show_user_link(request):
+    """ render user link beetween openfoodfacts products """
+
     user_products = Product.objects.filter(from_product__users=request.user) \
         .prefetch_related('substitutes',
                           'substitutes__categories',
@@ -198,6 +210,8 @@ def show_user_link(request):
 
 @login_required
 def profile(request):
+    """ render profile page """
+
     navbar_search_form = SearchForm(prefix="navbar")
     return render(request, 'purbeurre/profile.html', {
         'navbar_search_form': navbar_search_form
@@ -205,6 +219,8 @@ def profile(request):
 
 
 class SignupView(CreateView):
+    """ render signup page """
+
     form_class = CustomUserCreationForm
     success_url = '/'
     model = User
@@ -215,5 +231,7 @@ class SignupView(CreateView):
 
 
 class CustomLoginView(SuccessMessageMixin, LoginView):
+    """ render login page """
+
     success_message = "Vous êtes connecté !"
     redirect_authenticated_user = True

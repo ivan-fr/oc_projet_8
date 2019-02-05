@@ -4,8 +4,8 @@ from django.contrib.auth import views as auth_views
 
 app_name = "purbeurre"
 
+# define url of purbeurre website
 urlpatterns = [
-    # unconnected views
     path('', views.index, name='index'),
     path('credits/', views.show_credits, name='credits'),
     path('login/', views.CustomLoginView.as_view(), name='login'),

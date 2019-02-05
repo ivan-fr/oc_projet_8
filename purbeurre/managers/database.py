@@ -66,6 +66,8 @@ class DatabaseManager:
 
     @staticmethod
     def save_link_p_s_p(user, product_db, substitute_db):
+        """save relationship beetween products"""
+
         if product_db.id != substitute_db.id:
             p_s_p_db, created = ProductSubstituteProduct.objects.get_or_create(
                 from_product=product_db,

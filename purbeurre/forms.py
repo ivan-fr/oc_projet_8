@@ -4,6 +4,9 @@ from .utils import get_words_from_sentence
 
 
 class SearchForm(forms.Form):
+    """
+    define the search form for search product on openfoodfacts
+    """
     search = forms.CharField(label="Recherche", max_length=255, required=True,
                              min_length=2)
 
@@ -16,5 +19,7 @@ class SearchForm(forms.Form):
 
 
 class CustomUserCreationForm(UserCreationForm):
+    """add email field to the registration form"""
+
     class Meta(UserCreationForm.Meta):
         fields = ('username', 'email')
