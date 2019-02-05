@@ -24,6 +24,8 @@ class IndexTestCase(TestCase):
 
     @patch('urllib.request.urlopen')
     def test_post_index(self, mock_urllib_request_urlopen):
+        """ test of post in index view with mock urllib """
+
         mock_urllib_request_urlopen.side_effect = side_effect
 
         response = self.client.post(reverse('purbeurre:index'), {
@@ -35,6 +37,8 @@ class IndexTestCase(TestCase):
         self.assertEqual(len(response.context['products']), 9)
 
     def test_error_post_index(self):
+        """ test of post in index view with invalid values """
+
         response = self.client.post(reverse('purbeurre:index'), {
             'navbar-search': '___ /// ___ ///::::'
         })
@@ -47,6 +51,8 @@ class IndexTestCase(TestCase):
 class CreditsTestCase(TestCase):
 
     def test_get_credits(self):
+        """ test of get credits view """
+
         response = self.client.get(reverse('purbeurre:credits'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'purbeurre/mentions_legales.html')
@@ -56,6 +62,8 @@ class SubstitutesTestCase(TestCase):
 
     @patch('urllib.request.urlopen')
     def test_get_substitutes(self, mock_urllib_request_urlopen):
+        """ test of get substitute view with mock urllib """
+
         mock_urllib_request_urlopen.side_effect = side_effect
         response = self.client.get(reverse('purbeurre:substitutes', kwargs={
             'bar_code': '3029330003458'
@@ -76,7 +84,7 @@ class SubstitutesTestCase(TestCase):
 
 class ShowProductTestCase(TestCase):
 
-    # ran before each test.
+    # run before each test.
     def setUp(self):
         self.product, _ = Product.objects.get_or_create(
             name="produit test",
@@ -100,7 +108,9 @@ class ShowProductTestCase(TestCase):
 
 
 class AuthenticatedViewsTestCase(TestCase):
+    """ test of authenticated views """
 
+    # run before each test.
     def setUp(self):
         self.credentials = {'username': 'a-user', 'password': 'password'}
         self.user = User.objects.create_user(**self.credentials)
@@ -108,6 +118,8 @@ class AuthenticatedViewsTestCase(TestCase):
 
     @patch('urllib.request.urlopen')
     def test_create_substitute_link(self, mock_urllib_request_urlopen):
+        """ test of create substitute link with mock urllib """
+
         self.product, _ = Product.objects.get_or_create(
             name="produit test",
             bar_code="1"
@@ -139,6 +151,8 @@ class AuthenticatedViewsTestCase(TestCase):
 
     @patch('urllib.request.urlopen')
     def test_create_substitute_link_urllib(self, mock_urllib_request_urlopen):
+        """ test of create substitute link with mock urllib """
+
         mock_urllib_request_urlopen.side_effect = side_effect
         product_substitute_product = ProductSubstituteProduct.objects.count()
 
@@ -161,6 +175,8 @@ class AuthenticatedViewsTestCase(TestCase):
                          product_substitute_product_new - 1)
 
     def test_show_user_link(self):
+        """ test of the show user link view """
+
         self.product, _ = Product.objects.get_or_create(
             name="produit test",
             bar_code="1"
@@ -182,11 +198,15 @@ class AuthenticatedViewsTestCase(TestCase):
         self.assertEqual(len(response.context['liste']), 1)
 
     def test_profile(self):
+        """test of the profile view"""
+
         response = self.client.get(reverse('purbeurre:profile'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'purbeurre/profile.html')
 
     def test_login_redirect(self):
+        """test of the login redirection"""
+
         self.client.logout()
         response = self.client.post(reverse('purbeurre:login'),
                                     self.credentials)

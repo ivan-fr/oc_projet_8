@@ -1,4 +1,3 @@
-import json
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +16,8 @@ with open(os.path.join(BASE_DIR, 'get_category_note_a.json')) as f:
 
 with open(os.path.join(BASE_DIR, 'get_product_2.json')) as f:
     views_5 = f.read()
+
+# create mock data
 
 mock_data = {
     'views': {

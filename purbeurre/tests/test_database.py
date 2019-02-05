@@ -15,13 +15,16 @@ def side_effect(url):
 
 
 class DatabaseTestCase(TestCase):
+    """ test save product function of database manager """
 
     def setUp(self):
         self.credentials = {'username': 'a-user', 'password': 'password'}
         self.user = User.objects.create_user(**self.credentials)
 
     @patch('urllib.request.urlopen')
-    def test_do_research(self, mock_urllib_request_urlopen):
+    def test_save_product(self, mock_urllib_request_urlopen):
+        """ test save product function of database manager """
+
         mock_urllib_request_urlopen.side_effect = side_effect
         product = ApiManager.get_product("3029330003458")
         substitute = ApiManager.get_product("3029330003533")
