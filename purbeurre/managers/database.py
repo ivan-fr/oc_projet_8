@@ -88,13 +88,13 @@ class DatabaseManager:
     def save_substitutes(cls, category, substitutes):
 
         with transaction.atomic():
-            Category.objects.update_or_create(
-                name=category,
-                searched_substitutes=True
-            )
-
             for substitute in substitutes:
                 cls.save_product(substitute)
+
+            Category.objects.update_or_create(
+                name=category,
+                defaults={'searched_substitutes': True}
+            )
 
     @classmethod
     def get_substitutes(cls, product):
