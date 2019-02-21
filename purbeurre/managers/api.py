@@ -41,13 +41,13 @@ class ApiManager:
                     if _dict.get('product', None):
                         products = (_dict['product'],)
             else:
-                products = json.loads(response.read().decode('utf8'))
+                _products = json.loads(response.read().decode('utf8'))
 
-                if products.get('count', 0) > 0:
-                    products = products['products']
+                if _products.get('count', 0) > 0:
+                    products = _products['products']
 
-        for product in products:
-            wash_product(product)
+                    for product in products:
+                        wash_product(product)
 
         return products
 
