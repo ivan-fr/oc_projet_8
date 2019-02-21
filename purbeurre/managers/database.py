@@ -1,11 +1,13 @@
 from purbeurre.models import Brand, Ingredient, Store, Category, Product, \
-    ProductSubstituteProduct
+    ProductSubstituteProduct, ProductCategory
 from django.db import transaction
+import string
 
 
 class DatabaseManager:
     @classmethod
-    def save_product(cls, user, product: dict, substitutes: (tuple, None)):
+    def save_product(cls, product: dict, substitutes: (tuple, None) = None,
+                     user=None):
         """Save a product and his substitutes in the database."""
 
         nutriments = product.get('nutriments', {})
@@ -24,11 +26,16 @@ class DatabaseManager:
 
             if created:
                 categories = []
-                for category in product.get('categories', ()):
+                for category in reversed(
+                        product.get('categories_hierarchy', ())):
                     category_db, created = Category.objects.get_or_create(
                         name=category)
                     categories.append(category_db)
-                product_db.categories.add(*categories)
+                ProductCategory.objects.bulk_create(
+                    [ProductCategory(product=product_db, category=category,
+                                     hierarchy=i)
+                     for i, category in enumerate(categories, start=1)]
+                )
 
                 ingredients = []
                 iteration_ingredients = ()
@@ -56,11 +63,10 @@ class DatabaseManager:
                     stores.append(store_db)
                 product_db.stores.add(*stores)
 
-            if substitutes is not None:
+            if substitutes is not None and user is not None:
                 for substitute in substitutes:
-                    substitute_db = cls.save_product(user, substitute, None)
-                    DatabaseManager.save_link_p_s_p(user, product_db,
-                                                    substitute_db)
+                    substitute_db = cls.save_product(substitute)
+                    cls.save_link_p_s_p(user, product_db, substitute_db)
 
         return product_db
 
@@ -77,3 +83,68 @@ class DatabaseManager:
             p_s_p_db.users.add(user)
         else:
             raise Exception('Product and substitute cannot be the same.')
+
+    @classmethod
+    def save_substitutes(cls, category, substitutes):
+
+        with transaction.atomic():
+            Category.objects.update_or_create(
+                name=category,
+                searched_substitutes=True
+            )
+
+            for substitute in substitutes:
+                cls.save_product(substitute)
+
+    @classmethod
+    def get_substitutes(cls, product):
+        category = product.categories.filter(searched_substitutes=True,
+                                             productcategory__hierarchy=1) \
+            .first()
+
+        subsitutes = None
+
+        if category:
+            return cls.generate_substitutes(product.bar_code,
+                                            product.nutrition_grades or 'e',
+                                            category)
+
+        return subsitutes
+
+    @classmethod
+    def get_substitutes_from_api(cls, product):
+        subsitutes = None
+
+        category_expected = product.get('categories_hierarchy', None)
+
+        if not category_expected:
+            return subsitutes
+
+        category = Category.objects.filter(searched_substitutes=True,
+                                           name=category_expected[-1]).first()
+
+        if category:
+            return cls.generate_substitutes(product['code'],
+                                            product.get('nutrition_grades',
+                                                        'e'),
+                                            category)
+
+        return subsitutes
+
+    @classmethod
+    def generate_substitutes(cls, bar_code, nutrition_grades, category):
+        if nutrition_grades.lower() == 'a':
+            subsitutes = Product.objects.filter(categories=category,
+                                                nutrition_grades='a') \
+                             .exclude(bar_code=bar_code).order_by(
+                'nutrition_grades')[:9]
+        else:
+            _ascii = list(string.ascii_lowercase)
+            _ascii = _ascii[:_ascii.index(nutrition_grades.lower())]
+
+            subsitutes = Product.objects.filter(categories=category,
+                                                nutrition_grades__in=_ascii) \
+                             .exclude(bar_code=bar_code).order_by(
+                'nutrition_grades')[:9]
+
+        return subsitutes

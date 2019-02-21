@@ -42,7 +42,8 @@
             <div class="row">
                 {% for product in substitutes %}
                     <div class="col-md-4 col-sm-6 col-12">
-                        <div class="card mx-auto text-center mt-4" style="width: 200px">
+                        <div class="card mx-auto text-center mt-4"
+                             style="width: 200px">
                             <div class="item item-in-card">
                                 {% if product.nutrition_grades %}
                                     <span class="notify-badge">{{ product.nutrition_grades|upper }}</span>
@@ -64,7 +65,13 @@
                             </div>
                             <div class="card-body">
                                 <p class="card-text"><a
-                                        href="{% url 'purbeurre:create_link' sign product.code %}">Sauvergader</a>
+                                        {% if product.code %}
+                                            href="{% url 'purbeurre:create_link' sign product.code %}"
+                                        {% else %}
+                                            href="{% url 'purbeurre:create_link' sign product.bar_code %}"
+                                        {% endif %}
+                                >Sauvergader</a>
+
                                 </p>
                             </div>
                         </div>

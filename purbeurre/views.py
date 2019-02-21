@@ -58,13 +58,33 @@ def show_credits(request):
 def get_substitutes(request, bar_code):
     """ render substitutes page """
 
-    product = ApiManager.get_product(bar_code)
-    substitutes = ApiManager.get_substitutes(product)
     navbar_search_form = SearchForm(prefix="navbar")
-    sign = signing.dumps({
-        'product': bar_code,
-        'substitutes': list(substitute['code'] for substitute in substitutes)
-    })
+    sign = None
+    sign_context = {'product': bar_code}
+    product = None
+    substitutes_from_bdd = False
+
+    product = ApiManager.get_product(bar_code)
+
+    substitutes = DatabaseManager.get_substitutes_from_api(product)
+
+    if not substitutes:
+        substitutes = ApiManager.get_substitutes(product)
+        if substitutes:
+            DatabaseManager.save_substitutes(
+                product['categories_hierarchy'][-1],
+                substitutes)
+    else:
+        substitutes_from_bdd = True
+
+    if substitutes_from_bdd:
+        sign_context['substitutes'] = list(
+            substitute.bar_code for substitute in substitutes)
+        sign = signing.dumps(sign_context)
+    elif substitutes:
+        sign_context['substitutes'] = list(
+            substitute['code'] for substitute in substitutes)
+        sign = signing.dumps(sign_context)
 
     return render(request, 'purbeurre/substitutes.html', {
         'product': product,
@@ -137,30 +157,27 @@ def create_substitute_link(request, sign, substitute_bar_code):
     if do_save or do_save_p_s_p:
         if do_save:
             if urllib_product:
-                product = ApiManager.get_product(_dict['product'],
-                                                 with_clean=True)
+                product = ApiManager.get_product(_dict['product'])
                 if not product:
                     raise Exception('Produit non existant.')
             if urllib_substitute:
-                substitute = ApiManager.get_product(substitute_bar_code,
-                                                    with_clean=True)
+                substitute = ApiManager.get_product(substitute_bar_code)
                 if not substitute:
                     raise Exception('Substitut non existant.')
 
             if (urllib_product and not urllib_substitute) or \
                     (not urllib_product and urllib_substitute):
                 if urllib_product and not urllib_substitute:
-                    product = DatabaseManager.save_product(request.user,
-                                                           product, None)
+                    product = DatabaseManager.save_product(product)
                 else:
-                    substitute = DatabaseManager.save_product(request.user,
-                                                              substitute, None)
+                    substitute = DatabaseManager.save_product(substitute)
 
                 DatabaseManager.save_link_p_s_p(request.user, product,
                                                 substitute)
             else:
-                DatabaseManager.save_product(request.user, product,
-                                             (substitute,))
+                DatabaseManager.save_product(product,
+                                             substitutes=(substitute,),
+                                             user=request.user)
         else:
             DatabaseManager.save_link_p_s_p(request.user, product, substitute)
 

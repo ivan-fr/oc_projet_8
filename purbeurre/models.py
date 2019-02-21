@@ -6,6 +6,7 @@ class Category(models.Model):
     """add category model"""
 
     name = models.CharField(max_length=200, unique=True)
+    searched_substitutes = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -56,7 +57,7 @@ class Product(models.Model):
     brands = models.ManyToManyField(Brand)
     ingredients = models.ManyToManyField(Ingredient)
     stores = models.ManyToManyField(Store)
-    categories = models.ManyToManyField(Category)
+    categories = models.ManyToManyField(Category, through='ProductCategory')
     substitutes = models.ManyToManyField('self',
                                          through='ProductSubstituteProduct',
                                          through_fields=('from_product',
@@ -73,6 +74,12 @@ class Product(models.Model):
         return self.name
 
 
+class ProductCategory(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    hierarchy = models.IntegerField(default=1)
+
+
 class ProductSubstituteProduct(models.Model):
     """add ProductSubstituteProduct model"""
 
@@ -81,3 +88,6 @@ class ProductSubstituteProduct(models.Model):
     to_product = models.ForeignKey(Product, on_delete=models.CASCADE,
                                    related_name="to_product")
     users = models.ManyToManyField(User)
+
+    class Meta:
+        unique_together = (('from_product', 'to_product'),)
