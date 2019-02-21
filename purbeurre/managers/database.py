@@ -45,6 +45,7 @@ class DatabaseManager:
                     iteration_ingredients = product.get('ingredients')
 
                 for ingredient in iteration_ingredients:
+                    ingredient = ingredient[:200]
                     ingredient_db, created = Ingredient.objects.get_or_create(
                         name=ingredient)
                     ingredients.append(ingredient_db)
