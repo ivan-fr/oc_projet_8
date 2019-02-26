@@ -61,7 +61,6 @@ def get_substitutes(request, bar_code):
     navbar_search_form = SearchForm(prefix="navbar")
     sign = None
     sign_context = {'product': bar_code}
-    product = None
     substitutes_from_bdd = False
 
     product = ApiManager.get_product(bar_code)

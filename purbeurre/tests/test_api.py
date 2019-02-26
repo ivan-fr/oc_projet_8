@@ -47,7 +47,7 @@ class ApiTestCase(TestCase):
 
         mock_urllib_request_urlopen.side_effect = side_effect
         product = ApiManager.get_product("3029330003458")
-        washed_product = ApiManager.wash_product(product)
+        washed_product = product
 
         for category in washed_product.get('categories_hierarchy', ()):
             self.assertNotIn(':', category)

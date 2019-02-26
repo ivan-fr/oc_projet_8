@@ -1,10 +1,12 @@
-from django.test import TestCase
-from purbeurre.managers.database import DatabaseManager
-from purbeurre.managers.api import ApiManager
-from django.contrib.auth.models import User
-from purbeurre.models import Product, ProductSubstituteProduct
-from unittest.mock import patch, MagicMock
 from io import BytesIO
+from unittest.mock import patch, MagicMock
+
+from django.contrib.auth.models import User
+from django.test import TestCase
+
+from purbeurre.managers.api import ApiManager
+from purbeurre.managers.database import DatabaseManager
+from purbeurre.models import Product, ProductSubstituteProduct, Category
 from .mock_data import mock_data
 
 
@@ -33,13 +35,36 @@ class DatabaseTestCase(TestCase):
         product_substitute_product = \
             ProductSubstituteProduct.objects.filter(users=self.user).count()
 
-        DatabaseManager.save_product(self.user, product, (substitute,))
+        DatabaseManager.save_product(product, (substitute,), user=self.user)
 
         product_count_new = Product.objects.count()
         product_substitute_product_new = \
             ProductSubstituteProduct.objects.filter(users=self.user).count()
 
-        self.assertEqual(product_count,
-                         product_count_new - 2)
+        self.assertEqual(product_count, product_count_new - 2)
         self.assertEqual(product_substitute_product,
                          product_substitute_product_new - 1)
+
+    @patch('urllib.request.urlopen')
+    def test_save_substitutes_and_get_substitutes \
+                    (self, mock_urllib_request_urlopen):
+        mock_urllib_request_urlopen.side_effect = side_effect
+
+        product = ApiManager.get_product("3029330003458")
+        substitute = ApiManager.get_product("3029330003533")
+
+        category_count = Category.objects.count()
+        product_count = Product.objects.count()
+
+        DatabaseManager.save_substitutes(product['categories_hierarchy'][-1],
+                                         (substitute,))
+
+        category_count_new = Category.objects.filter(searched_substitutes=True) \
+            .count()
+        product_count_new = Product.objects.count()
+
+        self.assertEqual(product_count, product_count_new - 1)
+        self.assertEqual(category_count, category_count_new - 1)
+
+        substitutes = DatabaseManager.get_substitutes_from_api(product)
+        self.assertEqual(len(substitutes), 1)
