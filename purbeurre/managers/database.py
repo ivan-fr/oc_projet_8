@@ -12,16 +12,19 @@ class DatabaseManager:
 
         nutriments = product.get('nutriments', {})
         with transaction.atomic():
-            product_db, created = Product.objects.get_or_create(
-                name=product.get('product_name', None),
-                generic_name=product.get('generic_name', None),
-                nutrition_grades=product.get('nutrition_grades', None),
+            product_db, created = Product.objects.update_or_create(
                 bar_code=product['code'],
-                fat=str(nutriments.get('fat_100g', None)),
-                saturated_fat=str(nutriments.get('saturated-fat_100g', None)),
-                sugars=str(nutriments.get('sugars_100g', None)),
-                salt=str(nutriments.get('salt_100g', None)),
-                image_url=product.get('image_url', None)
+                defaults={
+                    'name': product.get('product_name', None),
+                    'generic_name': product.get('generic_name', None),
+                    'nutrition_grades': product.get('nutrition_grades', None),
+                    'fat': str(nutriments.get('fat_100g', None)),
+                    'saturated_fat': str(nutriments.get('saturated-fat_100g',
+                                                        None)),
+                    'sugars': str(nutriments.get('sugars_100g', None)),
+                    'salt': str(nutriments.get('salt_100g', None)),
+                    'image_url': product.get('image_url', None)
+                }
             )
 
             if created:

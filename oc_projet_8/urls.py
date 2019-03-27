@@ -16,10 +16,10 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from purbeurre.views import index
+from purbeurre.views import GeneralView
 
 urlpatterns = [
-    path('', index),
+    path('', GeneralView.index),
     path('purbeurre/', include('purbeurre.urls', namespace='purbeurre')),
 ]
 
