@@ -75,6 +75,8 @@ class Product(models.Model):
 
 
 class ProductCategory(models.Model):
+    """ add ProductCategory model """
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     hierarchy = models.IntegerField(default=1)

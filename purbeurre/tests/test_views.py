@@ -19,6 +19,8 @@ def side_effect(url):
 class IndexTestCase(TestCase):
 
     def test_get_index(self):
+        """ test of get in index view """
+
         response = self.client.get(reverse('purbeurre:index'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'purbeurre/index.html')

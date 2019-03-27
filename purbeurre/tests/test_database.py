@@ -48,6 +48,8 @@ class DatabaseTestCase(TestCase):
     @patch('urllib.request.urlopen')
     def test_save_substitutes_and_get_substitutes \
                     (self, mock_urllib_request_urlopen):
+        """ test the save of substitues and get the substitutes """
+
         mock_urllib_request_urlopen.side_effect = side_effect
 
         product = ApiManager.get_product("3029330003458")
