@@ -4,7 +4,7 @@ from unittest.mock import patch, MagicMock
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from purbeurre.managers.api import ApiManager
+from purbeurre.managers.openfoodfacts import ApiManager
 from purbeurre.managers.database import DatabaseManager
 from purbeurre.models import Product, ProductSubstituteProduct, Category
 from .mock_data import mock_data

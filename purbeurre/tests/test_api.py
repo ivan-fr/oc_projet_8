@@ -2,7 +2,7 @@ from django.test import TestCase
 from unittest.mock import patch, MagicMock
 from io import BytesIO
 from .mock_data import mock_data
-from purbeurre.managers.api import ApiManager
+from purbeurre.managers.openfoodfacts import ApiManager
 import types
 
 

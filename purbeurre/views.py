@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .forms import SearchForm, CustomUserCreationForm
-from purbeurre.managers.api import ApiManager
+from purbeurre.managers.openfoodfacts import ApiManager
 from purbeurre.managers.database import DatabaseManager
 from .models import ProductSubstituteProduct, Product
 
