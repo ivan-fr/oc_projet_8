@@ -87,6 +87,7 @@ class DatabaseManager:
 
     @classmethod
     def save_substitutes(cls, category, substitutes):
+        """ only save substitutes of a category """
 
         with transaction.atomic():
             for substitute in substitutes:
@@ -99,21 +100,27 @@ class DatabaseManager:
 
     @classmethod
     def get_substitutes(cls, product):
-        category = product.categories.filter(searched_substitutes=True,
-                                             productcategory__hierarchy=1) \
-            .first()
+        """ get substitutes of a product from database """
+
+        category = product.categories.filter(
+            searched_substitutes=True,
+            productcategory__hierarchy=1).first()
 
         subsitutes = None
 
         if category:
-            return cls.generate_substitutes(product.bar_code,
-                                            product.nutrition_grades or 'e',
-                                            category)
+            return cls.generate_substitutes(
+                product.bar_code,
+                product.nutrition_grades or 'e',
+                category
+            )
 
         return subsitutes
 
     @classmethod
     def get_substitutes_from_api(cls, product):
+        """ get substitutes of a product from api openfoodfacts """
+
         subsitutes = None
 
         category_expected = product.get('categories_hierarchy', None)
@@ -125,27 +132,31 @@ class DatabaseManager:
                                            name=category_expected[-1]).first()
 
         if category:
-            return cls.generate_substitutes(product['code'],
-                                            product.get('nutrition_grades',
-                                                        'e'),
-                                            category)
+            return cls.generate_substitutes(
+                product['code'],
+                product.get('nutrition_grades', 'e'),
+                category
+            )
 
         return subsitutes
 
     @classmethod
     def generate_substitutes(cls, bar_code, nutrition_grades, category):
+        """ return substitutes from a product bar_code, nutrition_grades and
+         a category."""
+
         if nutrition_grades.lower() == 'a':
-            subsitutes = Product.objects.filter(categories=category,
-                                                nutrition_grades='a') \
-                             .exclude(bar_code=bar_code).order_by(
-                'nutrition_grades')[:9]
+            substitutes = Product.objects.filter(
+                categories=category,
+                nutrition_grades='a').exclude(
+                bar_code=bar_code).order_by('nutrition_grades')[:9]
         else:
             _ascii = list(string.ascii_lowercase)
             _ascii = _ascii[:_ascii.index(nutrition_grades.lower())]
 
-            subsitutes = Product.objects.filter(categories=category,
-                                                nutrition_grades__in=_ascii) \
-                             .exclude(bar_code=bar_code).order_by(
-                'nutrition_grades')[:9]
+            substitutes = Product.objects.filter(
+                categories=category,
+                nutrition_grades__in=_ascii).exclude(
+                bar_code=bar_code).order_by('nutrition_grades')[:9]
 
-        return subsitutes
+        return substitutes
