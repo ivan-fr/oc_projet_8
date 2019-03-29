@@ -14,7 +14,7 @@ from purbeurre.managers.database import DatabaseManager
 from .models import ProductSubstituteProduct, Product
 
 
-class GeneralView():
+class GeneralView:
     @staticmethod
     def index(request):
         """render index page"""
@@ -50,13 +50,11 @@ class GeneralView():
 
         return render(request, 'purbeurre/index.html', context)
 
-
     @staticmethod
     def show_credits(request):
         """render credits page"""
 
         return render(request, 'purbeurre/mentions_legales.html')
-
 
     @staticmethod
     def get_substitutes(request, bar_code):
@@ -96,23 +94,22 @@ class GeneralView():
             'sign': sign
         })
 
-
     @staticmethod
     def show_product(request, _id):
         """ render show product """
 
-        product = get_object_or_404(Product.objects.prefetch_related('brands',
-                                                                     'ingredients',
-                                                                     'stores',
-                                                                     'categories'),
-                                    pk=_id)
+        product = get_object_or_404(Product.objects.prefetch_related(
+            'brands',
+            'ingredients',
+            'stores',
+            'categories'),
+            pk=_id)
         navbar_search_form = SearchForm(prefix="navbar")
 
         return render(request, 'purbeurre/show_product.html', {
             'product': product,
             'navbar_search_form': navbar_search_form,
         })
-
 
     @staticmethod
     @login_required
@@ -184,7 +181,8 @@ class GeneralView():
                                                  substitutes=(substitute,),
                                                  user=request.user)
             else:
-                DatabaseManager.save_link_p_s_p(request.user, product, substitute)
+                DatabaseManager.save_link_p_s_p(request.user, product,
+                                                substitute)
 
             messages.success(request, 'Substitut sauvegardé !')
 
@@ -196,13 +194,13 @@ class GeneralView():
             'navbar_search_form': navbar_search_form
         })
 
-
     @staticmethod
     @login_required
     def show_user_link(request):
         """ render user link beetween openfoodfacts products """
 
-        user_products = Product.objects.filter(from_product__users=request.user) \
+        user_products = Product.objects.filter(
+            from_product__users=request.user) \
             .prefetch_related('substitutes',
                               'substitutes__categories',
                               'substitutes__brands',
@@ -229,7 +227,6 @@ class GeneralView():
             'liste': paginator,
             'navbar_search_form': navbar_search_form
         })
-
 
     @staticmethod
     @login_required
