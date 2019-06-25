@@ -1,3 +1,5 @@
+LIRE readme.pdf
+
 ## 1 - Pré-requis
 *  **Python 3.6.x**.
 
